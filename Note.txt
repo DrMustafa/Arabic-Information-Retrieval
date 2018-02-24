@@ -1,2 +1,2 @@
 Put ir folder in the partition f of your computer or change the path.
-You must install nltk package and install it.
+You must download the nltk package and install it.
