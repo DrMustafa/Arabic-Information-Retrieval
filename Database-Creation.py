@@ -50,12 +50,12 @@ def isri_heavy(word):
 
 # takes a word list and perform light stemming for each Arabic words
 def isri_light(word):
-	word = arstemmer.norm(word, num=1)      #  remove diacritics which representing Arabic short vowels  
-	if not word in arstemmer.stop_words:    # exclude stop words from being processed
-	    word = arstemmer.pre32(word)        # remove length three and length two prefixes in this order
-	    word = arstemmer.suf32(word)        # remove length three and length two suffixes in this order
-	    word = arstemmer.waw(word)          # remove connective ‘و’ if it precedes a word beginning with ‘و’
-	    word = arstemmer.norm(word, num=2)  # normalize initial hamza to bare alif
+	word = arstemmer.norm(word, num=1)        
+	if not word in arstemmer.stop_words:    
+	    word = arstemmer.pre32(word)        
+	    word = arstemmer.suf32(word)        
+	    word = arstemmer.waw(word)          
+	    word = arstemmer.norm(word, num=2)  
 	lstem=word
 	return lstem
 
