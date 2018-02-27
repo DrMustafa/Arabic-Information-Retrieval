@@ -8,6 +8,7 @@ import nltk
 import json
 from nltk.stem.isri import ISRIStemmer
 '''--------------------------------------------------------------'''
+arstemmer = ISRIStemmer()
 asw = open('stopwords.txt').read()
 aswUinicode = asw.decode('utf-8')
 arabicStopWords =aswUinicode.split()
@@ -22,15 +23,17 @@ arabic_diacritics_unicode = arabic_diacritics_unicode.split()
 
 english_punt = list(string.punctuation)
 english_puntUnicode = list(string.punctuation.decode('utf-8'))
+
 # Arabic punctuations and dicritis 
 punctuations = set( arabic_punct + arabic_punctUnicode + arabic_diacritics + arabic_diacritics_unicode)
 # remove punctcutions
 def remove_punct(word):
 	for c in word: return ''.join(ch for ch in word if not ch in punctuations) # remove punctuation
-arstemmer = ISRIStemmer()
+
 def remove_diacritics(text):
 	result = arstemmer.norm(text, num=1) #  remove diacritics which representing Arabic short vowels
 	return result
+
 def process_text(text, removePunct=True, removeSW=True, removeNum=False):
 	text = remove_diacritics(text)# remove arabic diacritics
 	word_list = nltk.tokenize.wordpunct_tokenize(text.lower())
@@ -42,13 +45,10 @@ def process_text(text, removePunct=True, removeSW=True, removeNum=False):
 	word_list = [ w for w in word_list if w]# remove empty words
 	return word_list
 
-# takes a word list and returns the root for each Arabic words
-arstemmer = ISRIStemmer()
 def isri_heavy(word):	
 	root=arstemmer.stem(word)
 	return root
 
-# takes a word list and perform light stemming for each Arabic words
 def isri_light(word):
 	word = arstemmer.norm(word, num=1)        
 	if not word in arstemmer.stop_words:    
@@ -121,9 +121,9 @@ def documents_index():
        
         terms=[]
         for wordx in word_list1:            
-            stemAr = isri_light(wordx)
+            stemAr = isri_light(wordx) #using light stemmer
             #print "stemAr=",stemAr
-            #stemAr = isri_heavy(wordx)
+            #stemAr = isri_heavy(wordx) #using light stemmer
             #print "stemAr=",stemAr
             terms.append(wordx)           
         docs_dict[pageseq]=terms
@@ -181,7 +181,6 @@ def main(args):
     f.close()
     print "The inverted index is created......"
     
-
 if __name__ == '__main__':
     main(sys.argv)
 
