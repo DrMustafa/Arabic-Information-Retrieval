@@ -20,7 +20,6 @@ arabic_punctUnicode = arabic_punctUnicode.split()
 arabic_diacritics_unicode = arabic_diacritics.decode('utf-8')
 arabic_diacritics = arabic_diacritics.split()
 arabic_diacritics_unicode = arabic_diacritics_unicode.split()
-
 english_punt = list(string.punctuation)
 english_puntUnicode = list(string.punctuation.decode('utf-8'))
 
@@ -98,8 +97,7 @@ def gen_documents(docFile):
     pagedict_list=parseCollection(doc)
     return pagedict_list
   
-def documents_index():
-    
+def documents_index():   
     vector_space=[]
     tokens = {}
     docFileNames  = getFileNames("f:/ir/data")
