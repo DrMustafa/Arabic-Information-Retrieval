@@ -6,8 +6,8 @@ from numpy.lib.scimath import logn
 import json
 import nltk
 from nltk.stem.isri import ISRIStemmer
-
 '''--------------------------------------------------------------'''
+arstemmer = ISRIStemmer()
 with open('f:/ir/inverted_index.json') as f:
     inv= json.load(f)
 f.close()
@@ -34,7 +34,6 @@ punctuations = set( arabic_punct + arabic_punctUnicode + arabic_diacritics + ara
 # remove punctcutions
 def remove_punct(word):
 	for c in word: return ''.join(ch for ch in word if not ch in punctuations) # remove punctuation
-arstemmer = ISRIStemmer()
 def remove_diacritics(text):
 	result = arstemmer.norm(text, num=1) #  remove diacritics which representing Arabic short vowels
 	return result
@@ -46,23 +45,20 @@ def process_text(text, removePunct=True, removeSW=True, removeNum=False):
 		word_list = [ remove_punct(w) for w in word_list ]
 	if removeSW: word_list = [ w for w in word_list if not w in arabicStopWords ]
 	if removeNum: word_list = [ w for w in word_list if not w.isdigit() ]
-	word_list = [ w for w in word_list if w]# remove empty words
+	word_list = [ w for w in word_list if w] # remove empty words
 	return word_list
 
-# takes a word list and returns the root for each Arabic words
-arstemmer = ISRIStemmer()
 def isri_heavy(word):	
 	root=arstemmer.stem(word)
 	return root
 
-# takes a word list and perform light stemming for each Arabic words
 def isri_light(word):
-	word = arstemmer.norm(word, num=1)      #  remove diacritics which representing Arabic short vowels  
-	if not word in arstemmer.stop_words:    # exclude stop words from being processed
-	    word = arstemmer.pre32(word)        # remove length three and length two prefixes in this order
-	    word = arstemmer.suf32(word)        # remove length three and length two suffixes in this order
-	    word = arstemmer.waw(word)          # remove connective ‘و’ if it precedes a word beginning with ‘و’
-	    word = arstemmer.norm(word, num=2)  # normalize initial hamza to bare alif
+	word = arstemmer.norm(word, num=1)        
+	if not word in arstemmer.stop_words:    
+	    word = arstemmer.pre32(word)        
+	    word = arstemmer.suf32(word)        
+	    word = arstemmer.waw(word)          
+	    word = arstemmer.norm(word, num=2)  
 	lstem=word
 	return lstem
 
@@ -80,7 +76,6 @@ def query_vector(query):
     text=words
     print "The Query is:",text
     word_list1 = process_text(text) # remove diacritics and punctcutions, stopwords, and tokenize text
-
     terms=[]
     for wordx in word_list1:    
         stemAr = isri_light(wordx)
@@ -90,7 +85,6 @@ def query_vector(query):
         terms.append(wordx)             
     return terms
 
-
 def query_tfidf(doc_content,doc_count):
           tf={}
           tfidf={}
@@ -99,7 +93,6 @@ def query_tfidf(doc_content,doc_count):
               tf[term1] = tf.get(term1, 0) + 1 
               list_of_term1.append(term1)
           c1=list(set(list_of_term1))
-
           for token, freq in tf.iteritems():
               for term1 in doc_content:
                  if token==term1:
@@ -170,8 +163,8 @@ def cosin_similarity(aa,bb):
 #Main program..................................
 def main(args):
         #request = str(raw_input('Enter no.of queries? '))
-        #request =u'قسم علوم الحاسوب'       
-        request =u'فرع الذكاء الاصطناعي'
+        request =u'قسم علوم الحاسوب'       
+        #request =u'فرع الذكاء الاصطناعي'
         #request =u'فرع امنية الحاسوب'
         
         doc_count=get_doc_count()
@@ -184,20 +177,17 @@ def main(args):
         for term in query_terms:
             docs_id=get_docs_id_inverted(term)
             docs_id_list=docs_id_list|set(docs_id)
-            #print docs_id_list
-
         for doc_id in list(docs_id_list):
                b=get_doc_vector(doc_id)
                cos=cosin_similarity(a,b)
                if cos> 0:
-                   distance.append((doc_id,cos))
-            
+                   distance.append((doc_id,cos))            
         results=distance
         results.sort(key=lambda x: x[1])
         results=[result[0] for result in results]
         results=results[-10:]
         results.reverse()
-        print "Results=",results
+        print "Results=",results # Ranked list
 
 if __name__ == '__main__':
     main(sys.argv)
