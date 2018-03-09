@@ -121,7 +121,7 @@ def documents_index():
         for wordx in word_list1:            
             stemAr = isri_light(wordx) #using light stemmer
             #print "stemAr=",stemAr
-            #stemAr = isri_heavy(wordx) #using light stemmer
+            #stemAr = isri_heavy(wordx) #using heavy stemmer
             #print "stemAr=",stemAr
             terms.append(wordx)           
         docs_dict[pageseq]=terms
